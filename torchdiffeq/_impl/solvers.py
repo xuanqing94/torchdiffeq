@@ -60,9 +60,9 @@ class FixedGridODESolver(object):
 
             niters = torch.ceil((end_time - start_time) / step_size + 1).item()
             t_infer = torch.arange(0, niters).to(t) * step_size + start_time
-            if t_infer[-1] > t[-1]:
-                t_infer[-1] = t[-1]
-
+            #if t_infer[-1] > t[-1]:
+            #    t_infer[-1] = t[-1]
+            t_infer[-1] = t[-1]
             return t_infer
 
         return _grid_constructor
@@ -80,7 +80,7 @@ class FixedGridODESolver(object):
         _assert_increasing(t)
         t = t.type_as(self.y0[0])
         time_grid = self.grid_constructor(self.func, self.y0, t)
-        assert time_grid[0] == t[0] and time_grid[-1] == t[-1]
+        assert time_grid[0] == t[0] and time_grid[-1] == t[-1], f"{time_grid[0]}!={t[0]}, {time_grid[-1]}!={t[-1]}"
         time_grid = time_grid.to(self.y0[0])
 
         solution = [self.y0]

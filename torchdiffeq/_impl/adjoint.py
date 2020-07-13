@@ -3,7 +3,6 @@ import torch.nn as nn
 from . import odeint
 from .misc import _flatten, _flatten_convert_none_to_zeros
 
-
 class OdeintAdjointMethod(torch.autograd.Function):
 
     @staticmethod
@@ -80,14 +79,13 @@ class OdeintAdjointMethod(torch.autograd.Function):
                 aug_y0 = (*ans_i, *adj_y, adj_time, adj_params)
                 aug_ans = odeint(
                     augmented_dynamics, aug_y0,
-                    torch.tensor([t[i], t[i - 1]]), rtol=rtol, atol=atol, method=method, options=options
+                    torch.tensor([t[i].float(), t[i - 1]]), rtol=rtol, atol=atol, method=method, options=options
                 )
 
                 # Unpack aug_ans.
                 adj_y = aug_ans[n_tensors:2 * n_tensors]
                 adj_time = aug_ans[2 * n_tensors]
                 adj_params = aug_ans[2 * n_tensors + 1]
-
                 adj_y = tuple(adj_y_[1] if len(adj_y_) > 0 else adj_y_ for adj_y_ in adj_y)
                 if len(adj_time) > 0: adj_time = adj_time[1]
                 if len(adj_params) > 0: adj_params = adj_params[1]

@@ -52,12 +52,14 @@ def _is_finite(tensor):
     return not _check.any()
 
 
-def _decreasing(t):
-    return (t[1:] < t[:-1]).all()
+#def _decreasing(t):
+#    return (t[1:] < t[:-1]).all()
 
+def _decreasing(t):
+    return t[1].item() < t[0].item()
 
 def _assert_increasing(t):
-    assert (t[1:] > t[:-1]).all(), 't must be strictly increasing or decreasing'
+    assert (t[1:].float() > t[:-1].float()).all(), 't must be strictly increasing or decreasing'
 
 
 def _is_iterable(inputs):
